@@ -1,0 +1,5 @@
+#excluding package-lock.json file
+.rubocop.yml
+.stickler.yml
+Gemfile
+Gemfile.lock
