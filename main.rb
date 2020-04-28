@@ -133,17 +133,25 @@ module Enumerable
     counter
   end
 
-  def my_map
-    return to_enum(:my_each) unless block_given?
+  def my_map(proc = nil)
+    return to_enum(:my_map) unless block_given? || proc.class == Proc
 
-    if is_a?(Array) || is_a?(Range)
-      selected_array = []
-      self.my_each { |item| selected_array.push(yield(item)) }
-      return selected_array
-    else
-      selected_hash = {}
-      self.my_each { |key, value| selected_hash[key] = yield(key, value) }
-      return selected_hash
+    if proc.class == Proc
+      mapped_array = []
+      self.my_each do |item| 
+        mapped_array.push(proc.call(item))
+      end
+      mapped_array
+    else 
+      if is_a?(Array) || is_a?(Range)
+        selected_array = []
+        self.my_each { |item| selected_array.push(yield(item)) }
+        return selected_array
+      else
+        selected_hash = {}
+        self.my_each { |key, value| selected_hash[key] = yield(key, value) }
+        return selected_hash
+      end
     end
   end
 
@@ -157,36 +165,16 @@ module Enumerable
       end
       acc
   end
-  # p (5..10).my_inject { |sum, n| sum + n }            #=> 45
-  # p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
 
-  # p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
-  # p (1..4).my_map{ "cat"  }   #=> ["cat", "cat", "cat", "cat"]
-  
-  my_arr = [12, 10, 2, 5, 20, 17]
-  my_ha = { mine: 1, yours: 2 }
-  my_ra = 1..5
-
-
-  # p my_ha.my_all?{ |key, value| value.is_a?Integer }
-  # p my_ra.my_all? { |item| item.is_a?Integer }
-
-  # puts 'Testing my_each'
-  # my_ra.my_each { |item| puts "#{item} is here" }
-  # my_arr.my_each { |item| puts item }
-  # my_ha.my_each { |key, item| puts "#{key} => #{item}" }
-
-  # puts 'Testing my_each_with_index'
-  # my_ra.my_each_with_index { |item, i| puts "#{item} is here with #{i + 1}" }
-  # my_arr.my_each_with_index { |item, i| puts "#{item} with #{i}" }
-  # my_ha.my_each_with_index { |key, item| puts "#{key} => #{item}" }
 end
 
-
+check = [1, 2, 3, 4, 5]
+myproc = Proc.new{ |item| item * 3 }
+p check.my_map(myproc) 
 # testing #my_inject method with #multiply_els
 
 def multiply_els(arr) 
-  puts arr.my_inject(1) { |product, i| product * i }
+  arr.my_inject(1) { |product, i| product * i }
 end
 
-multiply_els([2, 4, 5])
+# puts multiply_els([2, 4, 5])
