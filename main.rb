@@ -157,7 +157,6 @@ module Enumerable
       end
       acc
   end
-
   # p (5..10).my_inject { |sum, n| sum + n }            #=> 45
   # p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
 
@@ -182,3 +181,12 @@ module Enumerable
   # my_arr.my_each_with_index { |item, i| puts "#{item} with #{i}" }
   # my_ha.my_each_with_index { |key, item| puts "#{key} => #{item}" }
 end
+
+
+# testing #my_inject method with #multiply_els
+
+def multiply_els(arr) 
+  puts arr.my_inject(1) { |product, i| product * i }
+end
+
+multiply_els([2, 4, 5])
