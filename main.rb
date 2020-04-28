@@ -74,6 +74,45 @@ module Enumerable
       false
     end
   end
+
+  def my_none?
+    if block_given?
+      if self.is_a?(Array) || self.is_a?(Range)
+        self.my_each do |item|
+          return false if yield(item) == true 
+        end
+        true
+      else # for Hashes
+        self.my_each do |key, item|
+          return false if yield(key, item) == true
+        end
+        true
+      end
+    else
+      if self.is_a?(Array) || self.is_a?(Range)
+        self.my_each do |item|
+          return false if item == true 
+        end
+        true
+      else #for Hashes
+        self.my_each do |key, item|
+          return false if item == true
+        end
+        true
+      end
+    end
+  end
+
+
+  p %w{antarrr bear cat}.my_none? { |word| word.length == 5 } #=> true
+  p %w{tan bear cat}.my_none? { |word| word.length >= 4 } #=> false
+  # p %w{ant bear cat}.my_none?(/d/)                        #=> true
+  # p [1, 3.14, 42].my_none?(Float)                         #=> false
+  p [].my_none?                                           #=> true
+  p [nil].my_none?                                       #=> true
+  p [nil, false].my_none?                                 #=> true
+  p [nil, false, true].my_none?                           #=> false
+
   
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
