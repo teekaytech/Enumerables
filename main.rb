@@ -44,6 +44,8 @@ module Enumerable
   end
 
   def my_all?
+    return 'No block given' unless block_given?
+
     if is_a?(Array) || is_a?(Range)
       self.my_each do |item|
         return false if yield(item) == false
@@ -51,16 +53,32 @@ module Enumerable
       true
     else
       self.my_each do |key, item|
-        return false if yield(key, item) == false
+        return false if (yield(key, item) == false || nil)
       end
       true
     end
   end
 
+  def my_any? 
+    return 'No block given' unless block_given?
+
+    if is_a?(Array) || is_a?(Range)
+      self.my_each do |item|
+        return true if yield(item) == true
+      end
+      false
+    else
+      self.my_each do |key, item|
+        return true if yield(key, item) == true
+      end
+      false
+    end
+  end
   
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
   my_ra = 1..5
+
 
   # p my_ha.my_all?{ |key, value| value.is_a?Integer }
   # p my_ra.my_all? { |item| item.is_a?Integer }
