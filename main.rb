@@ -103,16 +103,41 @@ module Enumerable
     end
   end
 
+  def my_count(params = nil)
+    counter = 0
+    if block_given? 
+      if self.is_a?(Array) || self.is_a?(Range)
+        self.my_each do |item|
+          counter += 1 if yield(item) == true
+        end
+      else #for Hashes
+        self.my_each do |key, item| 
+          counter += 1 if yield(key, item) == true
+        end
+      end
+    else
+      if self.is_a?(Array) || self.is_a?(Range)
+        self.my_each do |item|
+          counter += 1
+        end
+      else #for Hashes
+        self.my_each do |key, item| 
+          counter += 1
+        end
+      end
+    end
+    if params != nil
+      counter = 0
+      self.my_each { |item| counter += 1 if params == item }
+    end
+    counter
+  end
 
-  p %w{antarrr bear cat}.my_none? { |word| word.length == 5 } #=> true
-  p %w{tan bear cat}.my_none? { |word| word.length >= 4 } #=> false
-  # p %w{ant bear cat}.my_none?(/d/)                        #=> true
-  # p [1, 3.14, 42].my_none?(Float)                         #=> false
-  p [].my_none?                                           #=> true
-  p [nil].my_none?                                       #=> true
-  p [nil, false].my_none?                                 #=> true
-  p [nil, false, true].my_none?                           #=> false
 
+ary = [1, 2, 4, 2]
+p ary.my_count               #=> 4
+p ary.my_count(2)            #=> 2
+p ary.my_count{ |x| x%2==0 } #=> 3
   
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
