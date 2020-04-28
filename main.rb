@@ -1,7 +1,5 @@
 module Enumerable
   def my_each
-    return 'No block given' unless block_given?
-
     index = 0
     while index < size
       if is_a?(Array)
@@ -18,8 +16,6 @@ module Enumerable
   end
 
   def my_each_with_index
-    return 'No block given' unless block_given?
-
     index = 0
     while index < size
       if is_a?(Array)
@@ -35,17 +31,30 @@ module Enumerable
     end
   end
 
+  def my_select
+    if is_a?(Array) || is_a?(Range)
+      selected_array = []
+      self.each { |item| selected_array.push(item) if yield(item) }
+      return selected_array
+    else
+      selected_hash = {}
+      self.each { |key, value| selected_hash[key] = value if yield(key, value) }
+      return selected_hash
+    end
+  end
+
+  
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
   my_ra = 1..5
 
-  puts 'Testing my_each'
-  my_ra.my_each { |item| puts "#{item} is here" }
-  my_arr.my_each { |item| puts item }
-  my_ha.my_each { |key, item| puts "#{key} => #{item}" }
+  # puts 'Testing my_each'
+  # my_ra.my_each { |item| puts "#{item} is here" }
+  # my_arr.my_each { |item| puts item }
+  # my_ha.my_each { |key, item| puts "#{key} => #{item}" }
 
-  puts 'Testing my_each_with_index'
-  my_ra.my_each_with_index { |item, i| puts "#{item} is here with #{i + 1}" }
-  my_arr.my_each_with_index { |item, i| puts "#{item} with #{i}" }
-  my_ha.my_each_with_index { |key, item| puts "#{key} => #{item}" }
+  # puts 'Testing my_each_with_index'
+  # my_ra.my_each_with_index { |item, i| puts "#{item} is here with #{i + 1}" }
+  # my_arr.my_each_with_index { |item, i| puts "#{item} with #{i}" }
+  # my_ha.my_each_with_index { |key, item| puts "#{key} => #{item}" }
 end
