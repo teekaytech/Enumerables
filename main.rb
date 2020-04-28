@@ -34,12 +34,26 @@ module Enumerable
   def my_select
     if is_a?(Array) || is_a?(Range)
       selected_array = []
-      self.each { |item| selected_array.push(item) if yield(item) }
+      self.my_each { |item| selected_array.push(item) if yield(item) }
       return selected_array
     else
       selected_hash = {}
-      self.each { |key, value| selected_hash[key] = value if yield(key, value) }
+      self.my_each { |key, value| selected_hash[key] = value if yield(key, value) }
       return selected_hash
+    end
+  end
+
+  def my_all?
+    if is_a?(Array) || is_a?(Range)
+      self.my_each do |item|
+        return false if yield(item) == false
+      end
+      true
+    else
+      self.my_each do |key, item|
+        return false if yield(key, item) == false
+      end
+      true
     end
   end
 
@@ -47,6 +61,9 @@ module Enumerable
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
   my_ra = 1..5
+
+  # p my_ha.my_all?{ |key, value| value.is_a?Integer }
+  # p my_ra.my_all? { |item| item.is_a?Integer }
 
   # puts 'Testing my_each'
   # my_ra.my_each { |item| puts "#{item} is here" }
