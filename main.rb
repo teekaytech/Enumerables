@@ -147,9 +147,22 @@ module Enumerable
     end
   end
 
+  def my_inject(initial = 0)
+    return to_enum(:my_each) unless block_given?
+    acc = initial #captures initialization of the accumulator
+      if self.is_a?(Array) || self.is_a?(Range)
+        self.my_each do |item|
+          acc = yield(acc, item)
+        end
+      end
+      acc
+  end
 
-  p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
-  p (1..4).my_map{ "cat"  }   #=> ["cat", "cat", "cat", "cat"]
+  # p (5..10).my_inject { |sum, n| sum + n }            #=> 45
+  # p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
+
+  # p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
+  # p (1..4).my_map{ "cat"  }   #=> ["cat", "cat", "cat", "cat"]
   
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
