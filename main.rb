@@ -133,11 +133,23 @@ module Enumerable
     counter
   end
 
+  def my_map
+    return to_enum(:my_each) unless block_given?
 
-ary = [1, 2, 4, 2]
-p ary.my_count               #=> 4
-p ary.my_count(2)            #=> 2
-p ary.my_count{ |x| x%2==0 } #=> 3
+    if is_a?(Array) || is_a?(Range)
+      selected_array = []
+      self.my_each { |item| selected_array.push(yield(item)) }
+      return selected_array
+    else
+      selected_hash = {}
+      self.my_each { |key, value| selected_hash[key] = yield(key, value) }
+      return selected_hash
+    end
+  end
+
+
+  p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
+  p (1..4).my_map{ "cat"  }   #=> ["cat", "cat", "cat", "cat"]
   
   my_arr = [12, 10, 2, 5, 20, 17]
   my_ha = { mine: 1, yours: 2 }
