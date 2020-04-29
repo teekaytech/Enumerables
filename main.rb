@@ -50,43 +50,35 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def my_all(my_arg)
-    if my_arg.class == Regexp
-      my_all? { |item| item =~ my_arg }
-    elsif my_arg.class == Class
-      my_all? { |item| item.is_a? my_arg }
-    else
-      my_all? { |item| item == my_arg }
-    end
-  end
-
   def my_all?(my_arg = nil)
-    return my_all(my_arg) unless my_arg.nil?
-
     if block_given?
       my_each { |item| return false if yield(item) == false || yield(item).nil? }
     else
       my_each { |item| return false if item == false || item.nil? }
     end
+    if my_arg.class == Regexp
+      my_each { |item| item =~ my_arg }
+    elsif my_arg.class == Class
+      my_each { |item| item.is_a? my_arg }
+    else
+      my_each { |item| item == my_arg }
+    end
     true
   end
 
   def my_any?(my_arg = nil)
-    if block_given? && my_arg.nil?
+    if block_given?
       if is_a?(Array) || is_a?(Range)
         my_each { |item| return true if yield(item) == true }
       else
         my_each { |key, item| return true if yield(key, item) == true }
       end
-      false
     end
     if my_arg == Regexp
       my_each { |item| return true if item.to_s.match(my_arg) }
-    end
-    if my_arg.is_a? Class
+    elsif my_arg.is_a? Class
       my_each { |item| return true if item.is_a? my_arg }
-    end
-    if my_arg.nil?
+    else
       my_each { |item| return true if item == true }
     end
     false
