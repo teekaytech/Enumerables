@@ -90,7 +90,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     is_none = true
     if block_given?
       my_each { |item| is_none = false if yield(item) == true }
-    elsif my_arg == Regexp
+    elsif my_arg.is_a? Regexp
       my_each { |item| is_none = false if item.to_s.match(my_arg) }
     elsif my_arg.is_a? Class
       my_each { |item| is_none = false if item.is_a? my_arg }
@@ -140,3 +140,19 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
 end
 
 # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+
+p ['saheed', 'oladele', 'suretrust'].my_none?(/d/)
+p ['saheed', 'oladele', 'suretrust'].none?(/d/)
+
+p ['saheed', 'oladele', 'suretrust'].my_none?(5)
+p ['saheed', 'oladele', 'suretrust'].none?(5)
+
+puts 'Testing None'
+p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+p %w{ant bear cat}.my_none?(/d/)                        #=> true
+p [1, 3.14, 42].my_none?(Float)                         #=> false
+p [].my_none?                                           #=> true
+p [nil].my_none?                                        #=> true
+p [nil, false].my_none?                                 #=> true
+p [nil, false, true].my_none?                           #=> false
