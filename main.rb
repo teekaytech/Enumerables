@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Lint/RedundantCopDisableDirective, Style/GuardClause
 module Enumerable # rubocop:disable Metrics/ModuleLength
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -130,29 +130,43 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def my_inject(initial = 0)
-    return to_enum(:my_each) unless block_given?
+  def my_inject(*initial) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Lint/RedundantCopDisableDirective
+    return 'Number of arguments cannot be more than 2' if initial.length > 2
 
-    acc = initial # aptures initialization of the accumulator
-    my_each { |item| acc = yield(acc, item) } if is_a?(Array) || is_a?(Range)
+    acc = 0
+    iterator = 0
+    if initial.length.zero? && block_given?
+      my_each do |item|
+        iterator.zero? ? acc += item : yield(acc, item)
+        iterator += 1
+      end
+    elsif initial[0].is_a?(Integer) && initial[1].is_a?(Symbol)
+      acc = initial[0]
+      my_each { |item| acc = acc.method(initial[1]).call(item) }
+    elsif initial[0].is_a?(Integer) && block_given?
+      acc = initial[0]
+      my_each { |item| acc = yield(acc, item) }
+    elsif initial.length == 1 && !block_given?
+      if initial[0].class != Symbol && initial[0].class != String
+        return "#{initial[0]} is neither a string nor a symbol."
+      elsif initial[0].is_a?(Symbol)
+        my_each do |item|
+          iterator.zero? ? acc += item : acc = acc.method(initial[0]).call(item)
+          iterator += 1
+        end
+      elsif initial[0].is_a?(String)
+        my_ops = %I[:+, :-, :*, :/, :==, :=~]
+        if my_ops.my_any? { |op| op == initial[0].to_sym }
+          my_each do |item|
+            iterator.zero? ? acc += item : acc = acc.method(initial[0].to_sym).call(item) # rubocop:disable Metrics/BlockNesting
+            iterator += 1
+          end
+        else
+          return "undefined method '#{initial[0]}' for 1:Integer"
+        end
+      end
+    end
     acc
   end
 end
-
-# rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-
-p ['saheed', 'oladele', 'suretrust'].my_none?(/d/)
-p ['saheed', 'oladele', 'suretrust'].none?(/d/)
-
-p ['saheed', 'oladele', 'suretrust'].my_none?(5)
-p ['saheed', 'oladele', 'suretrust'].none?(5)
-
-puts 'Testing None'
-p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-p %w{ant bear cat}.my_none?(/d/)                        #=> true
-p [1, 3.14, 42].my_none?(Float)                         #=> false
-p [].my_none?                                           #=> true
-p [nil].my_none?                                        #=> true
-p [nil, false].my_none?                                 #=> true
-p [nil, false, true].my_none?                           #=> false
+# rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Lint/RedundantCopDisableDirective, Style/GuardClause
