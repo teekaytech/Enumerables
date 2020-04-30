@@ -74,10 +74,12 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
         my_each { |key, item| return true if yield(key, item) == true }
       end
     end
-    if my_arg == Regexp
-      my_each { |item| return true if item.to_s.match(my_arg) }
+    if my_arg.is_a? Regexp
+      my_each { |item| return true if item =~ my_arg }
     elsif my_arg.is_a? Class
       my_each { |item| return true if item.is_a? my_arg }
+    elsif my_arg.is_a? String
+      my_each { |item| return true if item == my_arg }
     else
       my_each { |item| return true if item == true }
     end
