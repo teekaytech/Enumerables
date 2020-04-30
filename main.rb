@@ -52,16 +52,16 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
 
   def my_all?(my_arg = nil)
     if block_given?
-      my_each { |item| return false if yield(item) == false || yield(item).nil? }
+      my_each { |item| return false unless yield(item) == true }
     else
       my_each { |item| return false if item == false || item.nil? }
     end
     if my_arg.class == Regexp
-      my_each { |item| item =~ my_arg }
+      my_each { |item| return false unless item =~ my_arg }
     elsif my_arg.class == Class
-      my_each { |item| item.is_a? my_arg }
-    else
-      my_each { |item| item == my_arg }
+      my_each { |item| return false unless item.is_a? my_arg }
+    elsif my_arg.is_a? Numeric
+      my_each { |item| return false unless item == my_arg }
     end
     true
   end
