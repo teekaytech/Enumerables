@@ -172,3 +172,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
   end
 end
 # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Lint/RedundantCopDisableDirective, Style/GuardClause
+
+def multiply_els(array)
+  array.my_inject(:*)
+end
