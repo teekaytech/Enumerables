@@ -139,7 +139,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     iterator = 0
     if initial.length.zero? && block_given?
       my_each do |item|
-        iterator.zero? ? acc += item : yield(acc, item)
+        iterator.zero? ? acc += item : acc = yield(acc, item)
         iterator += 1
       end
     elsif initial[0].is_a?(Integer) && initial[1].is_a?(Symbol)
@@ -172,5 +172,3 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
   end
 end
 # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Lint/RedundantCopDisableDirective, Style/GuardClause
-
-p [10, 5, 20, 14, 8, 8].my_inject { | acc, x | acc + x }
