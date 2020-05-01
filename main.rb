@@ -94,6 +94,8 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
       my_each { |item| is_none = false if item.to_s.match(my_arg) }
     elsif my_arg.is_a? Class
       my_each { |item| is_none = false if item.is_a? my_arg }
+    elsif my_arg.is_a? Numeric
+      my_each { |item| return false if item == my_arg }
     else
       my_each { |item| is_none = false if item == true }
     end
@@ -170,3 +172,5 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
   end
 end
 # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Lint/RedundantCopDisableDirective, Style/GuardClause
+
+p [10, 5, 20, 14, 8, 8].my_inject { | acc, x | acc + x }
