@@ -1,0 +1,2 @@
+#excluding package-lock.json file
+Gemfile.lock
