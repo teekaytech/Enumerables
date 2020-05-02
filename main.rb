@@ -135,7 +135,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
   def my_inject(*initial) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Lint/RedundantCopDisableDirective
     return 'Number of arguments cannot be more than 2' if initial.length > 2
 
-    acc = 0
+    acc = ''
     iterator = 0
     if initial.length.zero? && block_given?
       my_each do |item|
