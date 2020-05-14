@@ -85,13 +85,19 @@ describe Enumerable do
       end
     end
 
-    it 'returns true if block is not given and none of the items return false or nill' do
-      expect(string_val.my_all?).to eq(true)
+    context 'if block is not given and param is not given' do
+      it 'returns true if none of the items return false or nill' do
+        expect(string_val.my_all?).to eq(true)
+      end
     end
 
-    context 'if block is not given a parameter is given' do
-      it 'return true if all the items return true for the parameter given' do
+    context 'if block is not given but param is given' do
+      it 'return true if param == class and all elements is a member of param given' do
         expect(string_val.my_all?(String)).to eq(true)
+      end
+
+      it 'return true if param == pattern and pattern === element for all elements' do
+        expect(string_val.my_all?(/t/)).to eq(false)
       end
     end
   end
