@@ -39,7 +39,7 @@ describe Enumerable do
     it 'returns values and keys of hash if block is given' do
       result = []
       hash.my_each_with_index { |value, key| result << value + ' : ' + key }
-      expect(result).to eq(["color : #fff", "font_family : Arial"])
+      expect(result).to eq(['color : #fff', 'font_family : Arial'])
     end
 
     it 'returns the enumerator data if block is not given' do
@@ -60,15 +60,29 @@ describe Enumerable do
         expect(result).to eq({ 'color' => '#fff', 'font_family' => 'Arial' })
       end
     end
+
+    it 'returns empty array if block is given but returns false' do
+      result = []
+      array.my_select { |item| result << item if item > 10 }
+      expect(result).to eq([])
+    end
+
     it 'returns the enumerator data if block is not given' do
       expect(array.my_select).to be_an(Enumerator)
     end
   end
 
   describe '#my_all?' do
-    it 'returns true if block given never returns false or nil' do
-      result = string_val.my_all? { |item| item.length >= 3 }
-      expect(result).to eq(true)
+    context 'if block is given' do
+      it 'returns true if block never returns false or nil' do
+        result = string_val.my_all? { |item| item.length >= 3 }
+        expect(result).to eq(true)
+      end
+
+      it 'returns false if block returns false or nil' do
+        result = string_val.my_all? { |item| item.length >= 5 }
+        expect(result).to eq(false)
+      end
     end
 
     it 'returns true if block is not given and none of the items return false or nill' do
