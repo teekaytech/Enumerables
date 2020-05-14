@@ -2,9 +2,9 @@ require './main'
 
 describe Enumerable do
   let(:array) { [1, 2, 3, 4, 5] }
-  let(:mixed_values) { [1, 2, 3, 4, a] }
-  let(:string_values) { %w[ant bear cat] }
-  let(:float_values) { [1, 3.14, 42] }
+  let(:mixed_val) { [1, 2, 3, 4, a] }
+  let(:string_val) { %w[ant bear cat] }
+  let(:float_val) { [1, 3.14, 42] }
   let(:empty_array) { [] }
   let(:nil_array) { [nil] }
   let(:nil_false_array) { [nil, false] }
@@ -49,7 +49,7 @@ describe Enumerable do
 
   describe '#my_select' do
     context 'if block is given returns true' do
-      it 'returns an array containing all elements of array' do
+      it 'returns an array containing all elements of array/range' do
         result = []
         array.my_select { |item| result << item if item.even? }
         expect(result).to eq([2, 4])
@@ -62,6 +62,23 @@ describe Enumerable do
     end
     it 'returns the enumerator data if block is not given' do
       expect(array.my_select).to be_an(Enumerator)
+    end
+  end
+
+  describe '#my_all?' do
+    it 'returns true if block given never returns false or nil' do
+      result = string_val.my_all? { |item| item.length >= 3 }
+      expect(result).to eq(true)
+    end
+
+    it 'returns true if block is not given and none of the items return false or nill' do
+      expect(string_val.my_all?).to eq(true)
+    end
+
+    context 'if block is not given a parameter is given' do
+      it 'return true if all the items return true for the parameter given' do
+        expect(string_val.my_all?(String)).to eq(true)
+      end
     end
   end
 end
