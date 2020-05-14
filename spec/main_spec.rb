@@ -170,4 +170,51 @@ describe Enumerable do
       end
     end
   end
+
+  describe '#my_count' do
+    context 'if block is given' do
+      it 'counts the number of elements yielding a true value' do
+        expect(string_val.my_count { |item| item.length == 3 }).to eq(2)
+      end
+    end
+
+    context 'if block is not given and param is not given' do
+      it 'counts the number of elements in the collection' do
+        expect(string_val.my_count).to eq(3)
+      end
+    end
+
+    context 'if block is not given but param is given' do
+      it 'counts the number of items in enum that are equal to param' do
+        expect(float_val.my_count(2)).to eq(0)
+      end
+    end
+  end
+
+  describe '#my_map' do
+    it 'returns the enumerator data if block is not given' do
+      expect(array.my_map).to be_an(Enumerator)
+    end
+
+    it 'returns a new array with the results of running block once for every element in enum' do
+      result = []
+      array.my_map { |item| result << item * item }
+      expect(result).to match_array([1, 4, 9, 16, 25])
+    end
+
+    it 'returns keys and values of a newly created hash if block is given' do
+      result = {}
+      hash.my_map { |key, value| result[key] = value }
+      expect(result).to eql({ 'color' => '#fff', 'font_family' => 'Arial' })
+    end
+
+    context 'if proc is not nil' do
+      it 'returns a new array with the values already manipulated by the proc class' do
+        result = []
+        square = proc { |x| x * 2 }
+        array.my_map { |val| result << square.call(val) }
+        expect(result).to eql([2, 4, 6, 8, 10])
+      end
+    end
+  end
 end
