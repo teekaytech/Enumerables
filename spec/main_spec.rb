@@ -217,4 +217,40 @@ describe Enumerable do
       end
     end
   end
+
+  describe '#my_inject' do
+    context 'if block is given' do
+      it 'returns the value of an accumulator, if param.length == 0' do
+        expect(array.my_inject { |sum, n| sum + n }).to eq(15)
+      end
+    end
+
+    context 'if number of parameters is greater than zero' do
+      context 'if param.length == 1 && param[0] == Integer' do
+        it 'initializes the counter with the parameter and return the accumulator' do
+          expect(array.my_inject(3) { |sum, n| sum + n }).to eq(18)
+        end
+      end
+
+      context 'if param.length == 1 && param[0] == Symbol' do
+        it 'uses the symbol in the block and returns the value of the accumulator' do
+          expect(array.my_inject(:*)).to eq(120)
+        end
+      end
+
+      context 'if param.length == 1 && param[0] is neither a symbol nor a string' do
+        it 'return error message' do
+          expect(array.my_inject('+')).to eq("undefined method '+' for 1:Integer")
+        end
+      end
+
+      it 'initializes the counter with the parameter if param[0] == Integer && param[1] == Symbol' do
+        expect(array.my_inject(3) { |sum, n| sum + n }).to eq(18)
+      end
+    end
+
+    it 'returns error message if param.length > 2' do
+      expect(array.my_inject(3, :+, :-)).to eql('Number of arguments cannot be more than 2')
+    end
+  end
 end
