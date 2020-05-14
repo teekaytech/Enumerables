@@ -5,9 +5,7 @@ describe Enumerable do
   let(:mixed_val) { [1, 2, 3, 4, 'a'] }
   let(:string_val) { %w[ant bear cat] }
   let(:float_val) { [1, 3.14, 42] }
-  let(:nil_array) { [nil] }
   let(:nil_false_array) { [nil, false] }
-  let(:nil_false_true) { [nil, false, true] }
   let(:hash) { { 'color' => '#fff', 'font_family' => 'Arial' } }
 
   describe '#my_each' do
@@ -20,7 +18,7 @@ describe Enumerable do
     it 'returns keys and values of hash if block is given' do
       result = []
       hash.my_each { |key, value| result << key + ' : ' + value }
-      expect(result).to eq(["color : #fff", "font_family : Arial"])
+      expect(result).to eq(['color : #fff', 'font_family : Arial'])
     end
 
     it 'returns the enumerator data if block is not given' do
