@@ -22,6 +22,12 @@ where `name-of-ruby-script` is any ruby file contained inside the folder, (for i
 
   ![screenshot](/assets/img/screen.png)
 
+## Built with
+  * Ruby 
+  * Rubocop (Ruby Linter Gem)
+  * Lint (Stickler)
+  * RSpec (Ruby Testing Module)
+
 ## Author
 
 👤 **Taofeek Olalere**
